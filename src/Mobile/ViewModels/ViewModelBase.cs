@@ -15,7 +15,7 @@ public partial class ViewModelBase : ObservableObject
     [NotifyPropertyChangedFor(nameof(IsNotBusy))]
     bool isBusy;
 
-    public bool IsNotBusy => !isBusy;
+    public bool IsNotBusy => !IsBusy;
 
     [ObservableProperty]
     bool canLoadMore;

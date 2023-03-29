@@ -11,11 +11,11 @@ public partial class EpisodeViewModel : ViewModelBase
     {
         get
         {
-            return episode.IsInListenLater;
+            return Episode.IsInListenLater;
         }
         set
         {
-            episode.IsInListenLater = value;
+            Episode.IsInListenLater = value;
             OnPropertyChanged();
         }
     }
@@ -37,5 +37,5 @@ public partial class EpisodeViewModel : ViewModelBase
     Task PlayEpisode() => playerService.PlayAsync(Episode, Show);
 
     [RelayCommand]
-    Task NavigateToDetail() => Shell.Current.GoToAsync($"{nameof(EpisodeDetailPage)}?Id={episode.Id}&ShowId={Show.Id}");
+    Task NavigateToDetail() => Shell.Current.GoToAsync($"{nameof(EpisodeDetailPage)}?Id={Episode.Id}&ShowId={Show.Id}");
 }

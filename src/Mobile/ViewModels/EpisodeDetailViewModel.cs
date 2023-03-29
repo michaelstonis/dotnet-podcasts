@@ -21,13 +21,13 @@ public partial class EpisodeDetailViewModel : ViewModelBase
 
     public bool IsInListenLater
     {
-        get => episode?.IsInListenLater ?? false;
+        get => Episode?.IsInListenLater ?? false;
         set
         {
-            if (episode is null)
+            if (Episode is null)
                 return;
 
-            episode.IsInListenLater = value;
+            Episode.IsInListenLater = value;
             OnPropertyChanged();
         }
     }
@@ -58,13 +58,24 @@ public partial class EpisodeDetailViewModel : ViewModelBase
 
         var showVM = new ShowViewModel(show, subscriptionsService.IsSubscribed(show.Id), imageProcessingService);
 
+        if (showVM is null)
+        {
+            await Shell.Current.DisplayAlert(
+                AppResource.Error_Title,
+                AppResource.Error_Message,
+                AppResource.Close);
+
+            return;
+        }
+
         Show = showVM;
+
         Show.InitializeCommand.Execute(null);
 
         var eId = new Guid(Id);
         Episode = Show.Episodes.FirstOrDefault(e => e.Id == eId);
 
-        if (Show == null || Episode == null)
+        if (Episode == null)
         {
             await Shell.Current.DisplayAlert(
                 AppResource.Error_Title,
@@ -78,16 +89,28 @@ public partial class EpisodeDetailViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    Task ListenLater()
+    void ListenLater()
     {
-        if (listenLaterService.IsInListenLater(episode))
-            listenLaterService.Remove(episode);
-        else
-            listenLaterService.Add(episode, show.Show);
+        if (Episode is null)
+        {
+            return;
+        }
 
-        IsInListenLater = listenLaterService.IsInListenLater(episode);
-        Show.Episodes.FirstOrDefault(x => x.Id == episode.Id).IsInListenLater = IsInListenLater;
-        return Task.CompletedTask;
+        if (listenLaterService.IsInListenLater(Episode))
+            listenLaterService.Remove(Episode);
+        else
+            listenLaterService.Add(Episode, Show.Show);
+
+        IsInListenLater = listenLaterService.IsInListenLater(Episode);
+
+        var matchedEpisode = Show.Episodes.FirstOrDefault(x => x.Id == Episode.Id);
+
+        if (matchedEpisode is not null)
+        {
+            matchedEpisode.IsInListenLater = IsInListenLater;
+        }
+
+        return;
     }
 
     [RelayCommand]
@@ -97,7 +120,7 @@ public partial class EpisodeDetailViewModel : ViewModelBase
     Task Share() => 
         Microsoft.Maui.ApplicationModel.DataTransfer.Share.RequestAsync(new ShareTextRequest
     {
-        Text = $"{Config.BaseWeb}show/{show.Show.Id}",
+        Text = $"{Config.BaseWeb}show/{Show.Show.Id}",
         Title = "Share the episode uri"
     });
 }

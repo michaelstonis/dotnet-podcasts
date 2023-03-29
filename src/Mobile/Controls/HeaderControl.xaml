@@ -1,29 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView x:Name="selfMediaElementView"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:res="clr-namespace:Microsoft.NetConf2021.Maui.Resources.Strings"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
              x:Class="Microsoft.NetConf2021.Maui.Controls.HeaderControl">
     <OnIdiom x:TypeArguments="View">
         <OnIdiom.Desktop>
-            <Grid 
-                RowDefinitions="auto, auto">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
                 <SearchBar x:Name="searchBar"
-                            HorizontalOptions="Start"
-                            WidthRequest="460"
+                            ios:SearchBar.SearchBarStyle="Minimal"
                             Text="{Binding TextToSearch, Source={x:Reference selfMediaElementView}}"
                             SearchCommand="{Binding SearchCommand, Source={x:Reference selfMediaElementView}}" 
-                            SemanticProperties.Description="{x:Static res:AppResource.Semantic_Description_Tap_Search}"/>
+                            SemanticProperties.Description="{x:Static res:AppResource.Semantic_Description_Tap_Search}"
+                            Grid.Row="0" Grid.Column="0" />
 
                 <Label Text="{x:Static res:AppResource.See_All_Categories}"
                         Style="{StaticResource BodyLLabelStyle}"
                         TextColor="{StaticResource Primary}"
-                        Grid.Row="1"
+                        VerticalTextAlignment="Center"
                         HorizontalOptions="End"
                         Margin="0,0,30,0"
                         SemanticProperties.Description="{x:Static res:AppResource.Semantic_Description_Tap_See_All_Categories}"
                         IsVisible="{Binding ShowSearchCategories, Source={x:Reference selfMediaElementView}}"
-                        FontSize="16">
+                        FontSize="16"
+                        Grid.Row="0" Grid.Column="1" >
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                     </Label.GestureRecognizers>

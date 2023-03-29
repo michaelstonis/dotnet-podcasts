@@ -30,11 +30,11 @@ public partial class DiscoverViewModel : ViewModelBase
         categoriesVM = categories;
     }
 
-    internal async Task InitializeAsync()
+    [RelayCommand]
+    private async Task InitializeAsync()
     {
         //Delay on first load until window loads
-        await Task.Delay(1000);
-            await FetchAsync();
+        await FetchAsync();
     }
 
     private async Task FetchAsync()

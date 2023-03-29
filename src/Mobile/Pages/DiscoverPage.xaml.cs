@@ -1,4 +1,4 @@
-namespace Microsoft.NetConf2021.Maui.Pages;
+﻿namespace Microsoft.NetConf2021.Maui.Pages;
 
 public partial class DiscoverPage : ContentPage
 {
@@ -10,11 +10,22 @@ public partial class DiscoverPage : ContentPage
         InitializeComponent();
     }
 
-    protected override async void OnAppearing()
+    protected override async void OnHandlerChanging(HandlerChangingEventArgs args)
+    {
+        base.OnHandlerChanging(args);
+
+        if (args.NewHandler is null)
+        {
+            return;
+        }
+
+        await viewModel.InitializeCommand.ExecuteAsync(null);
+    }
+
+    protected override void OnAppearing()
     {
         base.OnAppearing();
         player.OnAppearing();
-        await viewModel.InitializeAsync();
     }
 
 

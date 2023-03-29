@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage x:Class="Microsoft.NetConf2021.Maui.Pages.ShowDetailPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -81,10 +81,10 @@
                                      CommandParameter="{Binding}"
                                      WidthRequest="28">
                             <ImageButton.IsVisible>
-                                <OnPlatform x:TypeArguments="x:Boolean">
-                                    <On Platform="Android, iOS">false</On>
-                                    <On Platform="UWP, MacCatalyst">true</On>
-                                </OnPlatform>
+                                <OnIdiom x:TypeArguments="x:Boolean">
+                                    <OnIdiom.Default>false</OnIdiom.Default>
+                                    <OnIdiom.Desktop>true</OnIdiom.Desktop>
+                                </OnIdiom>
                             </ImageButton.IsVisible>
                             <ImageButton.Triggers>
                                 <DataTrigger Binding="{Binding IsInListenLater}"

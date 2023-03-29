@@ -6,8 +6,8 @@ public partial class ListenLaterPage : ContentPage
 
     public ListenLaterPage(ListenLaterViewModel vm)
     {
-        InitializeComponent();
         BindingContext = vm;
+        InitializeComponent();
     }
 
     protected override async void OnAppearing()

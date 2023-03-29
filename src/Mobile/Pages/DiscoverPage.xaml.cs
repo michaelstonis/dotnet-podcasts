@@ -1,4 +1,4 @@
-﻿namespace Microsoft.NetConf2021.Maui.Pages;
+namespace Microsoft.NetConf2021.Maui.Pages;
 
 public partial class DiscoverPage : ContentPage
 {
@@ -6,8 +6,8 @@ public partial class DiscoverPage : ContentPage
 
     public DiscoverPage(DiscoverViewModel vm)
     {
-        InitializeComponent();
         BindingContext = vm;    
+        InitializeComponent();
     }
 
     protected override async void OnAppearing()

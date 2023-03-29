@@ -4,8 +4,8 @@ public partial class SettingsPage
 {
     public SettingsPage(SettingsViewModel vm)
     {
-        InitializeComponent();
         BindingContext = vm;
+        InitializeComponent();
     }
 }
 

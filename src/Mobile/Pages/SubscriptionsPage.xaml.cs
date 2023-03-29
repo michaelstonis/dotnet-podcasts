@@ -5,8 +5,8 @@ public partial class SubscriptionsPage: ContentPage
     SubscriptionsViewModel viewModel => BindingContext as SubscriptionsViewModel;
     public SubscriptionsPage(SubscriptionsViewModel vm)
     {
-        InitializeComponent();
         BindingContext = vm;
+        InitializeComponent();
     }
 
     protected override async void OnAppearing()

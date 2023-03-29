@@ -5,8 +5,8 @@ public partial class CategoryPage : ContentPage
     CategoryViewModel vm => BindingContext as CategoryViewModel;
     public CategoryPage(CategoryViewModel vm)
     {
-        InitializeComponent();
         BindingContext = vm;
+        InitializeComponent();
     }
 
     protected override async void OnAppearing()

@@ -6,8 +6,8 @@
 
         public EpisodeDetailPage(EpisodeDetailViewModel vm)
         {
-            InitializeComponent();
             BindingContext = vm;
+            InitializeComponent();
         }
 
         protected override async void OnAppearing()

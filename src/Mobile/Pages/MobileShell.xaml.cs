@@ -4,9 +4,8 @@
     {
         public MobileShell()
         {
-            InitializeComponent();
-
             BindingContext = new ShellViewModel();
+            InitializeComponent();
         }
     }
 }

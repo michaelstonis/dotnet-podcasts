@@ -4,9 +4,9 @@
     {
         public DesktopShell()
         {
-            InitializeComponent();
-
             BindingContext = new ShellViewModel();
+
+            InitializeComponent();
         }
     }
 }

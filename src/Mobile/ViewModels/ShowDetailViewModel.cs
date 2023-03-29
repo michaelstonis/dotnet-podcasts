@@ -70,15 +70,14 @@ public partial class ShowDetailViewModel : ViewModelBase
 
         Show = showVM;
         Show.InitializeCommand.Execute(null);
-        Episodes.ReplaceRange(show.Episodes.ToList());
+        Episodes.ReplaceRange(show.Episodes);
     }
 
     [RelayCommand]
     void SearchEpisode()
     {
-        var episodesList = show.Episodes
-            .Where(ep => ep.Title.Contains(TextToSearch, StringComparison.InvariantCultureIgnoreCase))
-            .ToList();
+        var episodesList = Show.Episodes
+            .Where(ep => ep.Title.Contains(TextToSearch, StringComparison.InvariantCultureIgnoreCase));
         Episodes.ReplaceRange(episodesList);
     }
 

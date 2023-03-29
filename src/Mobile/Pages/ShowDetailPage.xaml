@@ -10,24 +10,26 @@
              Title="{Binding Show.Title}"
              Style="{StaticResource DetailPageStyle}"
              x:DataType="viewmodels:ShowDetailViewModel">
-    <Grid Background="{AppThemeBinding Light={StaticResource Grey1}, Dark={StaticResource Grey9}}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <controls:HeaderControl IsVisible="{OnIdiom Default=true, Phone=false}"
                                     ShowSearchCategories="False"
-                                    VerticalOptions="Start"
                                     SemanticProperties.Description="{x:Static res:AppResource.Semantic_Description_Tap_Search}"
                                     TextToSearch="{Binding TextToSearch, Mode=OneWayToSource}"
                                     SearchCommand="{Binding SearchEpisodeCommand}"
                                     Grid.Row="0" Grid.Column="0"/>
 
         <ListView ItemsSource="{Binding Episodes}"
-                        SelectionMode="None"
-                        Margin="{OnIdiom Phone='10,0', Default='10,50,10,0'}"
-                        Grid.Row="1" Grid.Column="0"
-                        RowHeight="84">
+                    HasUnevenRows="False"
+                    CachingStrategy="RecycleElement"
+                    SelectionMode="None"
+                    Margin="{OnIdiom Phone='10,0', Default='10,20,10,0'}"
+                    BackgroundColor="Transparent"
+                    Grid.Row="1" Grid.Column="0"
+                    RowHeight="84">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="models:Episode">
                     <ViewCell>

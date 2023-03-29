@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage x:Class="Microsoft.NetConf2021.Maui.Pages.ShowDetailPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -156,6 +156,11 @@
             </ListView.Footer>
         </ListView>
 
+        <ActivityIndicator
+            IsRunning="{Binding InitializeCommand.IsRunning}"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Grid.Row="1" Grid.Column="0" />
 
         <controls:Player x:Name="player"
                          VerticalOptions="End"

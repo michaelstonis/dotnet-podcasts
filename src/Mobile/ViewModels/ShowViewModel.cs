@@ -6,7 +6,12 @@ public partial class ShowViewModel : ObservableObject
 
     bool isInitialized;
 
-    public Show Show { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Author))]
+    [NotifyPropertyChangedFor(nameof(Title))]
+    [NotifyPropertyChangedFor(nameof(Description))]
+    [NotifyPropertyChangedFor(nameof(Episodes))]
+    public Show show;
 
     [ObservableProperty]
     bool isSubscribed;
@@ -30,7 +35,13 @@ public partial class ShowViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private Task NavigateToDetail() => Shell.Current.GoToAsync($"{nameof(ShowDetailPage)}?Id={Show.Id}");
+    private Task NavigateToDetail() =>
+        Shell.Current.GoToAsync(
+            nameof(ShowDetailPage),
+            new Dictionary<string, object>
+            {
+                [nameof(ShowDetailViewModel.Show)] = this,
+            });
 
     [RelayCommand]
     private async Task InitializeAsync()

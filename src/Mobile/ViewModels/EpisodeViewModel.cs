@@ -20,11 +20,11 @@ public partial class EpisodeViewModel : ViewModelBase
         }
     }
 
-    public Show Show { get; set; }
+    public ShowViewModel Show { get; set; }
 
     public EpisodeViewModel(
         Episode episode,
-        Show show,
+        ShowViewModel show,
         PlayerService player)
     {
         playerService = player;
@@ -34,8 +34,15 @@ public partial class EpisodeViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    Task PlayEpisode() => playerService.PlayAsync(Episode, Show);
+    Task PlayEpisode() => playerService.PlayAsync(Episode, Show.Show);
 
     [RelayCommand]
-    Task NavigateToDetail() => Shell.Current.GoToAsync($"{nameof(EpisodeDetailPage)}?Id={Episode.Id}&ShowId={Show.Id}");
+    Task NavigateToDetail() =>
+        Shell.Current.GoToAsync(
+            nameof(EpisodeDetailPage),
+            new Dictionary<string, object>
+            {
+                [nameof(Show)] = Show,
+                [nameof(Episode)] = Episode,
+            });
 }

@@ -19,7 +19,7 @@ public partial class ShowDetailPage : ContentPage
             return;
         }
 
-        await viewModel.InitializeAsync();
+        await viewModel.InitializeCommand.ExecuteAsync(null);
     }
 
     protected override void OnAppearing()

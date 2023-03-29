@@ -32,4 +32,16 @@ public partial class EpisodeItemView
     {
         InitializeComponent();
     }
+
+    protected override void OnBindingContextChanged()
+    {
+        base.OnBindingContextChanged();
+
+        if (BindingContext is not EpisodeViewModel vm || vm.Show is null)
+        {
+            return;
+        }
+
+        vm.Show.InitializeCommand.Execute(null);
+    }
 }

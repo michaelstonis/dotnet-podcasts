@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <Grid
     x:Class="Microsoft.NetConf2021.Maui.Views.EpisodeItemView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -7,6 +7,7 @@
     x:Name="self"
     x:DataType="viewmodels:EpisodeViewModel"
     ColumnDefinitions="Auto, *, Auto"
+    RowDefinitions="*, *, *"
     ColumnSpacing="10"
     Padding="0,0,5,0">
     <Grid.GestureRecognizers>
@@ -15,39 +16,47 @@
     <Image
         Aspect="AspectFit"
         HeightRequest="{OnIdiom Desktop=125, Default=80}"
-        Source="{Binding Show.Image}"
-        WidthRequest="{OnIdiom Desktop=125, Default=80}" />
-    <VerticalStackLayout Grid.Column="1" 
-                         VerticalOptions="Center">
+        Source="{Binding Show.CachedImage, TargetNullValue='default_podcast_image.png'}"
+        WidthRequest="{OnIdiom Desktop=125, Default=80}"
+        Grid.Row="0" Grid.Column="0"
+        Grid.RowSpan="3"/>
+
         <Label
             LineBreakMode="TailTruncation"
             MaxLines="1"
             Style="{OnIdiom Default={StaticResource BodyXLLabelStyle},
                             Phone={StaticResource BodyMLabelStyle}}"
-            Text="{Binding Episode.Title}"
-            FontAttributes="Bold"/>
+            Text="{Binding Episode.Title, Mode=OneTime}"
+            FontAttributes="Bold"
+            VerticalTextAlignment="End"
+            Grid.Row="0" Grid.Column="1"/>
+
         <Label
             LineBreakMode="TailTruncation"
             MaxLines="1"
             Style="{OnIdiom Default={StaticResource BodyMLabelStyle},
                             Phone={StaticResource BodySLabelStyle}}"
-            Text="{Binding Show.Title}"
-            FontAttributes="Bold" />
+            Text="{Binding Show.Title, Mode=OneTime}"
+            FontAttributes="Bold"
+            VerticalTextAlignment="Center"
+            Grid.Row="1" Grid.Column="1"/>
         <Label
             LineBreakMode="TailTruncation"
             MaxLines="1"
             Style="{OnIdiom Default={StaticResource BodyMLabelStyle},
                             Phone={StaticResource BodySLabelStyle}}"
-            Text="{Binding Episode.Published, StringFormat='{0:MMM dd, yyyy}'}" />
-    </VerticalStackLayout>
+            Text="{Binding Episode.Published, StringFormat='{0:MMM dd, yyyy}', Mode=OneTime}"
+            VerticalTextAlignment="Start"
+            Grid.Row="2" Grid.Column="1"/>
 
     <Image
-        Grid.Column="2"
         HeightRequest="36"
         HorizontalOptions="Center"
         SemanticProperties.Description="Episode marked for listening later"
         Source="clockpink.png"
-        WidthRequest="36">
+        WidthRequest="36"
+        Grid.Row="0" Grid.Column="2"
+        Grid.RowSpan="3">
         <Image.GestureRecognizers>
             <TapGestureRecognizer Command="{Binding RemoveListenLaterCommand, Source={x:Reference self}}" CommandParameter="{Binding}" />
         </Image.GestureRecognizers>

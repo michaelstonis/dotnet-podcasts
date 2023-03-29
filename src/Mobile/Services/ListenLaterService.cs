@@ -2,14 +2,14 @@
 
 public class ListenLaterService
 {
-    List<Tuple<Episode, Show>> episodes;
+    List<(Episode Episode, Show Show)> episodes;
 
     public ListenLaterService()
     {
-        episodes = new List<Tuple<Episode, Show>>();
+        episodes = new List<(Episode Episode, Show Show)>();
     }
 
-    public List<Tuple<Episode, Show>> GetEpisodes()
+    public List<(Episode Episode, Show Show)> GetEpisodes()
     {
         return episodes;
     }
@@ -20,13 +20,13 @@ public class ListenLaterService
             
             return;
         
-        episodes.Add(new Tuple<Episode, Show>(episode, Show));
+        episodes.Add(new (episode, Show));
     }
 
     public void Remove(Episode episode)
     {
-        var episodeToRemove = episodes.First(ep => ep.Item1.Id == episode.Id);
-        if (episodeToRemove != null)
+        var episodeToRemove = episodes.FirstOrDefault(ep => ep.Item1.Id == episode.Id);
+        if (!episodeToRemove.Equals(default))
         {
             episodes.Remove(episodeToRemove);
         }

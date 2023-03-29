@@ -1,23 +1,15 @@
-﻿using Microsoft.NetConf2021.Maui.Resources.Strings;
+﻿using Microsoft.NetConf2021.Maui.Models;
+using Microsoft.NetConf2021.Maui.Resources.Strings;
 
 namespace Microsoft.NetConf2021.Maui.ViewModels;
 
-[QueryProperty(nameof(Id), nameof(Id))]
-[QueryProperty(nameof(ShowId), nameof(ShowId))]
-public partial class EpisodeDetailViewModel : ViewModelBase
+public partial class EpisodeDetailViewModel : ViewModelBase, IQueryAttributable
 {
     private readonly ListenLaterService listenLaterService;
     private readonly ShowsService podcastService;
     private readonly PlayerService playerService;
     private readonly SubscriptionsService subscriptionsService;
     private readonly ImageProcessingService imageProcessingService;
-
-    public string Id { get; set; }
-    public string ShowId { get; set; }
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsInListenLater))]
-    Episode episode;
 
     public bool IsInListenLater
     {
@@ -33,6 +25,10 @@ public partial class EpisodeDetailViewModel : ViewModelBase
     }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsInListenLater))]
+    Episode episode;
+
+    [ObservableProperty]
     private ShowViewModel show;
 
     public EpisodeDetailViewModel(ListenLaterService listen, ShowsService shows, PlayerService player, SubscriptionsService subs, ImageProcessingService imageProcessing)
@@ -46,44 +42,12 @@ public partial class EpisodeDetailViewModel : ViewModelBase
 
     internal async Task InitializeAsync()
     {
-        if (Episode != null)
-            return;
-
         await FetchAsync();
     }
 
     async Task FetchAsync()
     {
-        var show = await podcastService.GetShowByIdAsync(new Guid(ShowId));
-
-        var showVM = new ShowViewModel(show, subscriptionsService.IsSubscribed(show.Id), imageProcessingService);
-
-        if (showVM is null)
-        {
-            await Shell.Current.DisplayAlert(
-                AppResource.Error_Title,
-                AppResource.Error_Message,
-                AppResource.Close);
-
-            return;
-        }
-
-        Show = showVM;
-
-        Show.InitializeCommand.Execute(null);
-
-        var eId = new Guid(Id);
-        Episode = Show.Episodes.FirstOrDefault(e => e.Id == eId);
-
-        if (Episode == null)
-        {
-            await Shell.Current.DisplayAlert(
-                AppResource.Error_Title,
-                AppResource.Error_Message,
-                AppResource.Close);
-
-            return;
-        }
+        await Show.InitializeCommand.ExecuteAsync(null);
 
         IsInListenLater = listenLaterService.IsInListenLater(Episode);
     }
@@ -123,4 +87,10 @@ public partial class EpisodeDetailViewModel : ViewModelBase
         Text = $"{Config.BaseWeb}show/{Show.Show.Id}",
         Title = "Share the episode uri"
     });
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        Show = query[nameof(Show)] as ShowViewModel;
+        Episode = query[nameof(Episode)] as Episode;
+    }
 }

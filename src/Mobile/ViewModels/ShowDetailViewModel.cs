@@ -3,8 +3,7 @@ using MvvmHelpers;
 
 namespace Microsoft.NetConf2021.Maui.ViewModels;
 
-[QueryProperty(nameof(Id), nameof(Id))]
-public partial class ShowDetailViewModel : ViewModelBase
+public partial class ShowDetailViewModel : ViewModelBase, IQueryAttributable
 {
     private readonly PlayerService playerService;
     private readonly SubscriptionsService subscriptionsService;
@@ -12,18 +11,13 @@ public partial class ShowDetailViewModel : ViewModelBase
     private readonly ShowsService showsService;
     private readonly ImageProcessingService imageProcessingService;
 
-    private Guid showId;
-
-    public string Id { get; set; }
+    public ObservableRangeCollection<Episode> Episodes { get; } = new ObservableRangeCollection<Episode>();
 
     [ObservableProperty]
     ShowViewModel show;
 
     [ObservableProperty]
     Episode episodeForPlaying;
-
-    [ObservableProperty]
-    ObservableRangeCollection<Episode> episodes;
 
     [ObservableProperty]
     bool isPlaying;
@@ -38,39 +32,20 @@ public partial class ShowDetailViewModel : ViewModelBase
         subscriptionsService = subs;
         listenLaterService = later;
         imageProcessingService = imageProcessing;
-
-        episodes = new ObservableRangeCollection<Episode>();
     }
 
-    internal async Task InitializeAsync()
+    [RelayCommand]
+    async Task InitializeAsync()
     {
-        if (Id != null)
-        {
-            showId = new Guid(Id);
-        }
-        
         await FetchAsync();
     }
 
     async Task FetchAsync()
     {
-        var show = await showsService.GetShowByIdAsync(showId);
-
-        if (show == null)
-        {
-            await Shell.Current.DisplayAlert(
-                      AppResource.Error_Title,
-                      AppResource.Error_Message,
-                      AppResource.Close);
-
-            return;
-        }
-
-        var showVM = new ShowViewModel(show, subscriptionsService.IsSubscribed(show.Id), imageProcessingService);
-
-        Show = showVM;
-        Show.InitializeCommand.Execute(null);
-        Episodes.ReplaceRange(show.Episodes);
+        var updatedShow = await showsService.GetShowByIdAsync(Show.Show.Id);
+        Show.Show = updatedShow;
+        await Show.InitializeCommand.ExecuteAsync(null);
+        Episodes.ReplaceRange(Show.Episodes);
     }
 
     [RelayCommand]
@@ -78,11 +53,19 @@ public partial class ShowDetailViewModel : ViewModelBase
     {
         var episodesList = Show.Episodes
             .Where(ep => ep.Title.Contains(TextToSearch, StringComparison.InvariantCultureIgnoreCase));
+
         Episodes.ReplaceRange(episodesList);
     }
 
     [RelayCommand]
-    Task TapEpisode(Episode episode) => Shell.Current.GoToAsync($"{nameof(EpisodeDetailPage)}?Id={episode.Id}&ShowId={showId}");
+    Task TapEpisode(Episode episode) =>
+        Shell.Current.GoToAsync(
+            nameof(EpisodeDetailPage),
+            new Dictionary<string, object>
+            {
+                [nameof(Show)] = Show,
+                [nameof(Episode)] = episode,
+            });
 
     [RelayCommand]
     async Task Subscribe()
@@ -121,5 +104,10 @@ public partial class ShowDetailViewModel : ViewModelBase
         episode.IsInListenLater = !itemHasInListenLaterList;
 
         return Task.CompletedTask;
+    }
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        Show = query[nameof(Show)] as ShowViewModel;
     }
 }

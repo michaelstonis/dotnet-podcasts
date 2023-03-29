@@ -6,24 +6,27 @@ public partial class ListenLaterViewModel : ViewModelBase
 {
     readonly ListenLaterService listenLaterService;
     readonly PlayerService playerService;
+    private readonly SubscriptionsService subscriptionsService;
+    private readonly ImageProcessingService imageProcessingService;
 
-    [ObservableProperty]
-    ObservableRangeCollection<EpisodeViewModel> episodes;
+    public ObservableRangeCollection<EpisodeViewModel> Episodes { get; } = new ObservableRangeCollection<EpisodeViewModel>();
 
-    public ListenLaterViewModel(ListenLaterService listen, PlayerService player)
+    public ListenLaterViewModel(ListenLaterService listen, PlayerService player, SubscriptionsService subs, ImageProcessingService imageProcessing)
     {
         listenLaterService = listen;
         playerService = player;
-        Episodes = new ObservableRangeCollection<EpisodeViewModel>();
+        subscriptionsService = subs;
+        imageProcessingService = imageProcessing;
     }
 
     internal Task InitializeAsync()
     {
         var episodes = listenLaterService.GetEpisodes();
+
         var list = new List<EpisodeViewModel>();
         foreach (var episode in episodes)
         {
-            var episodeVM = new EpisodeViewModel(episode.Item1, episode.Item2, playerService);
+            var episodeVM = new EpisodeViewModel(episode.Episode, new ShowViewModel(episode.Show, subscriptionsService.IsSubscribed(episode.Show.Id), imageProcessingService), playerService);
 
             list.Add(episodeVM);
         }
@@ -37,6 +40,7 @@ public partial class ListenLaterViewModel : ViewModelBase
     {
         var episodeToRemove = Episodes
             .FirstOrDefault(ep => ep.Episode.Id == episode.Episode.Id);
+
         if(episodeToRemove != null)
         {
             listenLaterService.Remove(episode.Episode);

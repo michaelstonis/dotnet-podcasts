@@ -9,8 +9,8 @@
              xmlns:res="clr-namespace:Microsoft.NetConf2021.Maui.Resources.Strings"
              x:DataType="local:Player">
     <ContentView.Content>
-        <OnPlatform x:TypeArguments="View">
-            <On Platform="Android,iOS">
+        <OnIdiom x:TypeArguments="View">
+            <OnIdiom.Default>
                 <Grid ColumnDefinitions="*,auto"
                       RowDefinitions="auto"
                       Padding="8">
@@ -35,8 +35,8 @@
                     </ImageButton>
 
                 </Grid>
-            </On>
-            <On Platform="UWP, MacCatalyst">
+            </OnIdiom.Default>
+            <OnIdiom.Desktop>
                 <Grid ColumnDefinitions="auto, *, auto">
                     <Grid ColumnDefinitions="auto, auto"
                           RowDefinitions="auto,auto"
@@ -83,7 +83,7 @@
                                TextColor="White" />
                     </Grid>
                 </Grid>
-            </On>
-        </OnPlatform>
+            </OnIdiom.Desktop>
+        </OnIdiom>
     </ContentView.Content>
 </ContentView>

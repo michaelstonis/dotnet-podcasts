@@ -3,6 +3,7 @@
 public partial class Player : ContentView
 {   
     private PlayerService playerService;
+    private ImageProcessingService imageProcessingService;
     
     public Player()
     {
@@ -17,14 +18,15 @@ public partial class Player : ContentView
 #endif
     }
 
-    protected override void OnHandlerChanged()
+    protected override async void OnHandlerChanged()
     {
         base.OnHandlerChanged();
 
         if (playerService == null)
         {
             this.playerService = this.Handler.MauiContext.Services.GetService<PlayerService>();
-            InitPlayer();
+            this.imageProcessingService = this.Handler.MauiContext.Services.GetService<ImageProcessingService>();
+            await InitPlayerAsync();
         }
     }
 
@@ -33,36 +35,40 @@ public partial class Player : ContentView
         await playerService.PlayAsync(playerService.CurrentEpisode, playerService.CurrentShow);
     }
 
-    internal void OnAppearing()
+    internal async void OnAppearing()
     {
-        InitPlayer();  
+        await InitPlayerAsync();  
     }
 
-    void InitPlayer()
+    async Task InitPlayerAsync()
     {
         if (playerService == null)
             return;
 
         this.playerService.IsPlayingChanged += PlayerService_IsPlayingChanged;
         IsVisible = playerService.CurrentEpisode != null;
+
         if (this.playerService.CurrentEpisode != null)
-            UpdatePlayPause();
+            await UpdatePlayPauseAsync();
     }
 
-    private void UpdatePlayPause()
+    private async Task UpdatePlayPauseAsync()
     {
         this.IsVisible = true;
 
         this.playButton.Source = this.playerService.IsPlaying ? "player_pause.png" : "player_play.png";
 
-        epiosdeTitle.Text = this.playerService.CurrentEpisode.Title;
+        episodeTitle.Text = this.playerService.CurrentEpisode.Title;
         authorText.Text = $"{this.playerService.CurrentShow?.Author} - {this.playerService.CurrentEpisode?.Published.ToString("MMM, d yyy")}";
 
-        podcastImage.Source = this.playerService.CurrentShow?.Image;
+        podcastImage.Source =
+            imageProcessingService is not null && this.playerService.CurrentShow?.Image is not null
+                ? await imageProcessingService?.ProcessRemoteImage(this.playerService.CurrentShow?.Image)
+                : this.playerService.CurrentShow?.Image;
         duration.Text = this.playerService.CurrentEpisode?.Duration.ToString();
     }
 
-    private void PlayerService_IsPlayingChanged(object sender, EventArgs e)
+    private async void PlayerService_IsPlayingChanged(object sender, EventArgs e)
     {
         if (this.playerService.CurrentEpisode == null)
         {
@@ -70,7 +76,7 @@ public partial class Player : ContentView
         }
         else
         {
-            UpdatePlayPause();
+            await UpdatePlayPauseAsync();
         }
     }
 

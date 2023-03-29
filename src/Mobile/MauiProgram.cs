@@ -1,4 +1,5 @@
-﻿using MonkeyCache.FileStore;
+﻿using Microsoft.NetConf2021.Maui.Views;
+using MonkeyCache.FileStore;
 
 namespace Microsoft.NetConf2021.Maui;
 
@@ -6,6 +7,8 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
+        Barrel.ApplicationId = "dotnetpodcasts";
+
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
@@ -21,9 +24,6 @@ public static class MauiProgram
                 fonts.AddFont("Segoe-Ui-Semilight.ttf", "SegoeUiSemilight");
             });
 
-        Barrel.ApplicationId = "dotnetpodcasts";
-
-        builder.Services.AddMauiBlazorWebView();
         return builder.Build();
     }
 }
